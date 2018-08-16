@@ -50,7 +50,7 @@ func Get(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (uinames UINames) GetJoke(w http.ResponseWriter, r *http.Request) {
+func (uinames *UINames) GetJoke(w http.ResponseWriter, r *http.Request) {
 	var joke Joke
 	urlValues := url.Values{}
 	urlValues.Set("firstName",uinames.Name)
