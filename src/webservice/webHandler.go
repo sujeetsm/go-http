@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"encoding/json"
-
+	"net/url"
 )
 
 /*
@@ -52,7 +52,12 @@ func Get(w http.ResponseWriter, r *http.Request) {
 
 func (uinames UINames) GetJoke(w http.ResponseWriter, r *http.Request) {
 	var joke Joke
-	joke_uri := "http://api.icndb.com/jokes/random?firstName="+uinames.Name+"&lastName="+uinames.Surname+"&limitTo=[nerdy]"
+	urlValues := url.Values{}
+	urlValues.Set("firstName",uinames.Name)
+	urlValues.Set("lastName",uinames.Surname)
+	urlValues.Set("limiTo","[nerdy]")
+	queryurl := urlValues.Encode()
+	joke_uri := "http://api.icndb.com/jokes/random?"+queryurl
 
 	log.Println("Joke URI:",joke_uri)
 	res2, err2 := http.Get(joke_uri)
