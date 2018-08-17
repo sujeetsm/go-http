@@ -2,7 +2,6 @@ package webservice
 
 import (
 	"net/http"
-	"fmt"
 	"log"
 	"encoding/json"
 	"net/url"
@@ -15,7 +14,7 @@ import (
 
 func ProcessRequest(w http.ResponseWriter, r *http.Request) {
 	
-	log.Println("Incoming Request:", r.Method)
+	//log.Println("Incoming Request:", r.Method)
 	switch r.Method {
 	case http.MethodGet:
 		Get(w, r)
@@ -41,7 +40,6 @@ func Get(w http.ResponseWriter, r *http.Request) {
 	} else {
 		err = json.NewDecoder(names_response.Body).Decode( &names_data)
 		if err != nil {
-			log.Println("Error :",err)
 			Error(&w, 415, "Unable to Decode Names", "MalFormed response", nil)
 		} else {
 			names_data.GetJoke(w,r)
@@ -49,6 +47,12 @@ func Get(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
+
+/*
+ * Func to fetch the jokes based of UINames reciever.
+ * Builds/Encodes the URL for the request to get jokes
+ * 
+*/
 
 func (uinames *UINames) GetJoke(w http.ResponseWriter, r *http.Request) {
 	var joke Joke
@@ -59,25 +63,27 @@ func (uinames *UINames) GetJoke(w http.ResponseWriter, r *http.Request) {
 	queryurl := urlValues.Encode()
 	joke_uri := "http://api.icndb.com/jokes/random?"+queryurl
 
-	log.Println("Joke URI:",joke_uri)
+	//log.Println("Joke URI:",joke_uri)
 	res2, err2 := http.Get(joke_uri)
 	if err2 != nil {
-		log.Println("Error :",err2)
 		Error(&w, 408, "Chuck Norris has taken down the internet Unable to Fetch Jokes", "Unable to Fetch Jokes", nil)
 		
 	} else {
 		err2 = json.NewDecoder(res2.Body).Decode( &joke)
 		if err2 != nil {
-			log.Println("Error :",err2)
 			Error(&w, 415, "cannot decode Chuck Norris has used CN2048 encryption", "MalFormed response", nil)
 
 		} else {
-		
-			fmt.Printf("%s",joke.Val.Joke)
 			Success(&w, joke.Val.Joke)
 		}
 	}
 }
+
+/*
+ * Handles Success reponse to the Http Request
+ * 
+*/
+
 func Success(w *http.ResponseWriter, result interface{}) {
 	writer := *w
 
@@ -93,6 +99,11 @@ func Success(w *http.ResponseWriter, result interface{}) {
 	writer.Write(marshalled)
 }
 
+
+/*
+ * Handles Error reponse to the Http Request
+ * 
+*/
 
 func Error(w *http.ResponseWriter, code int, responseText string, logMessage string, err error) {
 	errorMessage := ""
