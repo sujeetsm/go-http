@@ -33,4 +33,17 @@ func TestProcessRequestPut(t *testing.T){
 	}
 
 }
+func TestProcessRequestGet(t *testing.T){
+	testreq, err := http.NewRequest("GET", "/", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	reqRecorder := httptest.NewRecorder()
+	handler := http.HandlerFunc(ProcessRequest)
+	handler.ServeHTTP(reqRecorder,testreq)
+	if status:=reqRecorder.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusMethodNotAllowed)
+	}
+
+}
 
