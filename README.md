@@ -1,7 +1,7 @@
 # go-http
 Steps to build the WebService :
 1) Checkout or unzip the code.
-2) set your GOPATH env var to <on-your-checkout-machine-path-to>/gp-http folder)
+2) set your GOPATH env var to <on-your-checkout-machine-path-to>/go-http folder)
 3) CD to <...path-to>/go-http/src.
 4) run the command :>  'go build -o <name-of-the-binary-you-want-to-creare>' ...
    for  eg: 'go build -o websvc' <- this will build a binary named websvc conatining the webservice
