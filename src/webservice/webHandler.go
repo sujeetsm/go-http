@@ -21,7 +21,7 @@ func ProcessRequest(w http.ResponseWriter, r *http.Request) {
 		Get(w, r)
 		break
 	default:
-		HandleError(&w, 405, "Method not allowed", "Method not allowed", nil)
+		Error(&w, 405, "Method not allowed", "Method not allowed", nil)
 		break
 	}
 }
@@ -37,12 +37,12 @@ func Get(w http.ResponseWriter, r *http.Request) {
 	names_response, err := http.Get("http://uinames.com/api")
 	if err != nil {
 		log.Println("Error :",err)
-		HandleError(&w, 405, "Unable to fetch Names", "destination unreachable", nil)
+		Error(&w, 408, "Unable to fetch Names", "destination unreachable", nil)
 	} else {
 		err = json.NewDecoder(names_response.Body).Decode( &names_data)
 		if err != nil {
 			log.Println("Error :",err)
-			HandleError(&w, 405, "Unable to Decode Names", "MalFormed response", nil)
+			Error(&w, 415, "Unable to Decode Names", "MalFormed response", nil)
 		} else {
 			names_data.GetJoke(w,r)
 			
@@ -63,28 +63,28 @@ func (uinames *UINames) GetJoke(w http.ResponseWriter, r *http.Request) {
 	res2, err2 := http.Get(joke_uri)
 	if err2 != nil {
 		log.Println("Error :",err2)
-		HandleError(&w, 405, "Chuck Norris has taken down the internet Unable to Fetch Jokes", "Unable to Fetch Jokes", nil)
+		Error(&w, 408, "Chuck Norris has taken down the internet Unable to Fetch Jokes", "Unable to Fetch Jokes", nil)
 		
 	} else {
 		err2 = json.NewDecoder(res2.Body).Decode( &joke)
 		if err2 != nil {
 			log.Println("Error :",err2)
-			HandleError(&w, 405, "cannot decode Chuck Norris has used CN2048 encryption", "MalFormed response", nil)
+			Error(&w, 415, "cannot decode Chuck Norris has used CN2048 encryption", "MalFormed response", nil)
 
 		} else {
 		
 			fmt.Printf("%s",joke.Val.Joke)
-			HandleSuccess(&w, joke.Val.Joke)
+			Success(&w, joke.Val.Joke)
 		}
 	}
 }
-func HandleSuccess(w *http.ResponseWriter, result interface{}) {
+func Success(w *http.ResponseWriter, result interface{}) {
 	writer := *w
 
 	marshalled, err := json.Marshal(result)
 
 	if err != nil {
-		HandleError(w, 500, "Internal Server Error", "Error marshalling response JSON", err)
+		Error(w, 500, "Internal Server Error", "Error marshalling response JSON", err)
 		return
 	}
 
@@ -94,7 +94,7 @@ func HandleSuccess(w *http.ResponseWriter, result interface{}) {
 }
 
 
-func HandleError(w *http.ResponseWriter, code int, responseText string, logMessage string, err error) {
+func Error(w *http.ResponseWriter, code int, responseText string, logMessage string, err error) {
 	errorMessage := ""
 	writer := *w
 
