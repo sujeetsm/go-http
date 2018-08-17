@@ -14,7 +14,7 @@ import (
 
 func ProcessRequest(w http.ResponseWriter, r *http.Request) {
 	
-	//log.Println("Incoming Request:", r.Method)
+	log.Println("Incoming Request:", r.Method)
 	switch r.Method {
 	case http.MethodGet:
 		Get(w, r)
@@ -87,7 +87,7 @@ func (uinames *UINames) GetJoke(w http.ResponseWriter, r *http.Request) {
 func Success(w *http.ResponseWriter, result interface{}) {
 	writer := *w
 
-	marshalled, err := json.Marshal(result)
+	mresult, err := json.Marshal(result)
 
 	if err != nil {
 		Error(w, 500, "Internal Server Error", "Error marshalling response JSON", err)
@@ -96,7 +96,7 @@ func Success(w *http.ResponseWriter, result interface{}) {
 
 	writer.Header().Add("Content-Type", "application/json")
 	writer.WriteHeader(200)
-	writer.Write(marshalled)
+	writer.Write(mresult)
 }
 
 
