@@ -1,4 +1,5 @@
 # go-http
+Sample Http Server in golang using net/http. 
 Steps to build the WebService :
 1) Checkout or unzip the code.
 2) set your GOPATH env var to the absolute path of go-http folder. For eg. export GOPATH=/home/user/go-http
